@@ -1,7 +1,7 @@
 export PATH=$PATH:/usr/local/bin
 
 NAME="$(whoami)_alfred_bm"
-IMAGE='registry.cn-hangzhou.aliyuncs.com/shadow-docker/alfred:bookmarks_v1'
+IMAGE='registry.cn-hangzhou.aliyuncs.com/shadow-docker/alfred:bookmarks_v2'
 ARG=$@
 COMMAND="python /root/src/bookmark.py $ARG"
 

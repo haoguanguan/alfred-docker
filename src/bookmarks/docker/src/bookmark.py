@@ -52,6 +52,17 @@ class Url(object):
         }
 
 
+def handle_json(json):
+    res = []
+    if json["type"] == "folder":
+        for j in json["children"]:
+            res.extend(handle_json(j))
+    elif json["type"] == "url":
+        item = Url(json['name'], json['url'], json['name'])
+        res.append(item)
+
+    return res
+
 def parse_file(filename):
     """
     Get all bookmarks
@@ -68,27 +79,11 @@ def parse_file(filename):
     if data:
         # parse data
         try:
-            bookmark_bar = data['roots']['bookmark_bar']['children']
-            # for each list
-            for folder in bookmark_bar:
-                folder_name = folder['name']
-                marks = folder['children']
-
-                # for each marks
-                for article in marks:
-                    item = Url(article['name'], article['url'], folder_name)
-                    result.append(item)
-
-            bookmark_bar = data['roots']['other']["children"]
-            for  d in bookmark_bar:
-                folder_name = "other"
-
-                item = Url(d['name'], d['url'], folder_name)
-                result.append(item)
+            targets = ["bookmark_bar", "other", "synced"]
+            for d in targets:
+                result.extend(handle_json(data["roots"][d]))
         except Exception as e:
-            print e
             result = list()
-
     return result
 
 def find(articles, key_word):
